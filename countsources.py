@@ -9,5 +9,5 @@ print y
 
 vals=np.unique(y) #find the number of unique values in y
 for val in vals:
-	count = val (y == val)
+	count = np.sum(y == val)
 	print count
