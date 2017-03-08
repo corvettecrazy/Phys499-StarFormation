@@ -22,7 +22,7 @@ cohrs.add_column(clumpmass)
 cohrs.write('cohrs_ultimate5_clump_mass.fits', overwrite = True)
 
 totalmass=cohrs['mlum_ex_msun']
-#plt.subplot(221)
+plt.subplot(221)
 plt.loglog(totalmass, clumpmass,'ro', label=" ") #x Vs. y
 
 plt.plot([1E0,1E5],[1E0,1E5], lw=3,alpha=0.5, label="100% of Clump mass vs cloud mass") #clumpmass = total mass line
@@ -34,7 +34,7 @@ plt.legend()
 plt.show()
 
 massfraction=mass/totalmass
-#plt.subplot(224)
+plt.subplot(224)
 plt.loglog(totalmass, massfraction)
 plt.xlabel('Total Mass')
 plt.ylabel('Mass Fraction')
