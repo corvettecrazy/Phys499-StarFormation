@@ -16,8 +16,10 @@ for row in t: #for loop that runs through every row in t
 	if cohrs_label != 0:
 		mass= 13.1 * (cohrs[cohrs_label-1]['distance']/1E3)**2 * (bgps[bgps_label-1]['flux']) #mass in solar mass
 #In the above, we feed in the cohrs cloud number into the ultimate catologue and pull the distance to that cloud. Then, we input the bgps number into the v2 catologue and pull the flux of that cloud.
-	
+			
 		clumpmass[cohrs_label - 1] += mass
+cohrs.add_column(clumpmass)
+cohrs.write('cohrs_ultimate5_clump_mass.fits', overwrite = True)
 
 totalmass=cohrs['mlum_ex_msun']
 #plt.subplot(221)
