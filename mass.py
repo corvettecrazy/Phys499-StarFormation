@@ -1,15 +1,40 @@
 from astropy.table import Table, Column
 from spectral_cube import SpectralCube
 import numpy as np
+import matplotlib.pyplot as plt
 
-t1=Table.read('bgps_v2.1.fits')
-t2=Table.read('cohrs_ultimatecatalog5.fits')
+t=Table.read('BGPS_with_cohrs.fits')
 
-valuecolumn = Column(np.zeros(len(t1)), name='Clump Mass')
+bgps=Table.read('bgps_v2.1.fits')
+cohrs=Table.read('cohrs_ultimatecatalog5.fits')
 
-distance=np.array(t2['distance'])
-flux=np.array(t1['flux'])
+clumpmass = Column(np.zeros(len(cohrs)), name='Clump Mass')
 
-#Problem: length of distance and flux is not the same
+for row in t: #for loop that runs through every row in t
+	cohrs_label = int(row['COHRS_label']) #defining the cohrs object number
+	bgps_label=int(row['BGPS_NUMBER']) #defining the bgps cloud number
+	if cohrs_label != 0:
+		mass= 13.1 * (cohrs[cohrs_label-1]['distance']/1E3)**2 * (bgps[bgps_label-1]['flux']) #mass in solar mass
+#In the above, we feed in the cohrs cloud number into the ultimate catologue and pull the distance to that cloud. Then, we input the bgps number into the v2 catologue and pull the flux of that cloud.
+	
+		clumpmass[cohrs_label - 1] += mass
 
-mass=13.1*flux*distance**2 
+totalmass=cohrs['mlum_ex_msun']
+#plt.subplot(221)
+plt.loglog(totalmass, clumpmass,'ro', label=" ") #x Vs. y
+
+plt.plot([1E0,1E5],[1E0,1E5], lw=3,alpha=0.5, label="100% of Clump mass vs cloud mass") #clumpmass = total mass line
+plt.plot([1E0/0.1,1E5/0.1],[1E0,1E5], label="10% of clump mass vs cloud mass")
+plt.xlabel('Total Mass')
+plt.ylabel('Clump Mass')
+plt.title('Total Mass of Dense Gas Clumps Vs. Total Mass of Cloud')
+plt.legend()
+plt.show()
+
+massfraction=mass/totalmass
+#plt.subplot(224)
+plt.loglog(totalmass, massfraction)
+plt.xlabel('Total Mass')
+plt.ylabel('Mass Fraction')
+plt.title('Fraction of Cloud Mass Held in Dense Gas Clumps Vs. Total Cloud Mass')
+plt.show()
